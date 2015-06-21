@@ -1,0 +1,28 @@
+{
+  "name": "fx-sync-4-fos",
+  "version": "0.0.0",
+  "authors": [
+    "@cat_in_136"
+  ],
+  "license": "APL 2.0",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "building-blocks": "gh-pages",
+    "fos-fx-sync": "cat-in-136/node-fx-sync",
+    "jquery": "~2.1.4"
+  },
+  "exportsOverride": {
+    "building-blocks": {
+      "js": "js/*.js",
+      "css/": ["cross_browser.css", "transitions.css", "util.css"],
+      "css/icons": "icons",
+      "css/style": "style"
+    }
+  }
+}

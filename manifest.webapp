@@ -1,0 +1,27 @@
+{
+  "version": "0.0.0",
+  "name": "fx-sync-4-fos",
+  "description": "Simple Firefox Sync Client for Firefox OS",
+  "launch_path": "/index.html",
+  "icons": {
+    "16": "/img/icons/icon16x16.png",
+    "48": "/img/icons/icon48x48.png",
+    "60": "/img/icons/icon60x60.png",
+    "128": "/img/icons/icon128x128.png"
+  },
+  "developer": {
+    "name": "@cat_in_136"
+  },
+  "type": "privileged",
+  "permissions": {
+    "systemXHR": {
+      "description": "for connecting to the Firefox Sync servers" 
+    }
+  },
+  "installs_allowed_from": [
+    "*"
+  ],
+  "locales": {
+  },
+  "default_locale": "en"
+}

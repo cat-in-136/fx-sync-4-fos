@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no" />
+  <title>Fx Sync Client</title>
+  <!-- Building blocks -->
+  <link rel="stylesheet" href="assets/css/building-blocks/style/action_menu.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/style/buttons.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/style/confirm.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/style/edit_mode.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/style/headers.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/style/input_areas.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/style/status.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/style/switches.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/style/drawer.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/style/lists.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/style/progress_activity.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/style/scrolling.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/style/seekbars.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/style/tabs.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/style/toolbars.css">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="assets/css/building-blocks/icons/styles/action_icons.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/icons/styles/media_icons.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/icons/styles/comms_icons.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/icons/styles/settings_icons.css">
+
+  <!-- Transitions -->
+  <link rel="stylesheet" href="assets/css/building-blocks/transitions.css">
+
+  <!-- Util CSS: some extra tricks -->
+  <link rel="stylesheet" href="assets/css/building-blocks/util.css">
+
+  <link rel="stylesheet" href="index.css">
+
+  <script type="application/javascript" defer src="assets/js/jquery.js"></script>
+  <script type="application/javascript" defer src="assets/js/fx-sync.js"></script>
+
+  <script type="application/javascript" defer src="assets/js/building-blocks/status.js"></script>
+  <script type="application/javascript" defer src="assets/js/building-blocks/seekbars.js"></script>
+
+  <script type="application/javascript" defer src="index.js"></script>
+</head>
+<body>
+  <section id="content">
+    <section data-type="sidebar">
+      <header>
+        <menu type="toolbar">
+          <a href="javascript:void(0);">Done</a>
+        </menu>
+        <h1></h1>
+      </header>
+      <nav>
+        <ul>
+          <li><a href="javascript:void(0);">Sign out</a></li>
+        </ul>
+      </nav>
+    </section>
+
+    <section id="index" role="region" class="current">
+      <header class="fixed">
+        <h1>Fx Sync Client</h1>
+      </header>
+      <article class="scrollable header">
+        <progress id="signin-progress" class="pack-activity hidden" max="100" value="0"></progress>
+        <form id="signin-form">
+          <header>
+            <h2>Sign in</h2>
+          </header>
+          <p>
+            <input type="email" name="email" placeholder="mail address" required>
+            <input type="password" name="password" placeholder="password" required>
+
+            <span class="pack-checkbox-box">
+              <label class="pack-checkbox"><input type="checkbox" name="own-cloud"><span></span></label>
+              <span>Use own cloud server</span>
+            </span>
+
+            <fieldset class="none" id="signin-own-cloud-box">
+              <legend>Cloud Server</legend>
+              <input type="text" name="fxaServerUrl" placeholder="FxA auth server">
+              <input type="text" name="syncAuthUrl" placeholder="Sync auth server">
+            </fieldset>
+
+            <button class="recommend" disabled>Sign in</button>
+          </p>
+        </form>
+      </article>
+    </section>
+
+    <section id="storage-menu" role="region">
+      <header class="fixed">
+        <a class="sidebar-toggle" href="javascript:void(0);"><span class="icon icon-menu">show sidebar</span></a>
+        <h1>Fx Sync Client</h1>
+      </header>
+      <article class="scrollable header">
+        <div data-type="list">
+          <ul>
+            <li>
+              <a href="#bookmarks"><p>Bookmarks</p></a>
+            </li>
+            <li>
+              <a href="javascript:void(0);"><p>Password</p></a>
+            </li>
+          </ul>
+        </div>
+      </article>
+    </section>
+
+    <section id="bookmarks" role="region">
+      <header class="fixed">
+        <a class="btn-back" href="#storage-menu"><span class="icon icon-back">back</span></a>
+        <h1>Sync::Bookmarks</h1>
+      </header>
+      <article class="scrollable header">
+        <div data-type="list">
+          <ul>
+            <li>
+            <a href="javascript:void(0);"><p>Title<em>a</em></p><p>Desc</p></a>
+            </li>
+            <li>
+              <a href="javascript:void(0);"><p>Password</p></a>
+            </li>
+          </ul>
+        </div>
+      </article>
+    </section>
+
+  </section>
+
+</body>
+</html>
