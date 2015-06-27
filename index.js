@@ -25,7 +25,7 @@ $(function () {
     console.debug(bookmarks); // TODO to be removed
     bookmarks.forEach(function (bookmark, index, bookmarks) {
       if (bookmark.type != "query") {
-        var item = $($.parseHTML('<li><a href="javascript:void(0);"><p></p><p></p></a></li>'));
+        var item = $($.parseHTML('<li><a href="javascript:void(0);" target="_blank"><p></p><p></p></a></li>'));
         $("a:link", item).prop("href", bookmark.bmkUri);
         $("a:link p:first-child", item).text(bookmark.title);
         $("a:link p:last-child", item).text(bookmark.bmkUri);
