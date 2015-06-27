@@ -1,7 +1,9 @@
 $(function () {
+  var P = require("p-promise");
   var Sync = require("fx-sync")();
   var sync = undefined;
   var bookmarks = undefined;
+  var passwords = undefined;
 
   function setCurrentSection(panel) {
     var panel = $(panel);
@@ -16,18 +18,33 @@ $(function () {
   }
   function setBookmarks(aBookmarks) {
     bookmarks = aBookmarks;
+    if (bookmarks.length == 0) { return; }
 
     var list = $("#bookmarks article ul");
     list.empty();
-    console.debug(bookmarks);
+    console.debug(bookmarks); // TODO to be removed
     bookmarks.forEach(function (bookmark) {
       if (bookmark.type != "query") {
-        var item = $.parseHTML('<li><a href="javascript:void(0);" target="_blank"><p></p><p></p></li>');
+        var item = $($.parseHTML('<li><a href="javascript:void(0);"><p></p><p></p></a></li>'));
         $("a:link", item).prop("href", bookmark.bmkUri);
         $("a:link p:first-child", item).text(bookmark.title);
         $("a:link p:last-child", item).text(bookmark.bmkUri);
         list.append(item);
       }
+    });
+  }
+  function setPasswords(aPasswords) {
+    passwords = aPasswords;
+    if (passwords.length == 0) { return; }
+
+    var list = $("#passwords article ul");
+    list.empty();
+    console.debug(passwords); // TODO to be removed
+    passwords.forEach(function (password) {
+      var item = $($.parseHTML('<li><p></p><p></p></li>'));
+      $("p:first-child", item).text(password.hostname);
+      $("p:last-child", item).text(password.username);
+      list.append(item);
     });
   }
 
@@ -65,35 +82,46 @@ $(function () {
 
     try {
       sync = new Sync({ email: email, password: password }, { fxaServerUrl: fxaServerUrl, syncAuthUrl: syncAuthUrl });
-      sync.fetch("bookmarks").then(function(results) {
+      sync.fetch("bookmarks").then(function (results) {
+        setBookmarks(results);
+
+        return sync.fetch("passwords");
+      }).then(function (results) {
+        setPasswords(results);
+
+        return P();
+      }).done(function () {
         utils.status.show("Signed in");
         setCurrentSection("#storage-menu");
-
-        setBookmarks(results);
       }, function (error) {
         failSignin(error);
         $('input[name="password"]', signinForm).focus();
-      }).done();
+      });
     } catch (ex) {
       failSignin(ex);
     }
   });
   $('#signin-form input[name="own-cloud"]').on('change', function (event) {
     if ($(event.currentTarget).prop("checked")) {
-      $("#signin-own-cloud-box").removeClass("none");
+      $("#signin-own-cloud-box").removeClass("collapse");
     } else {
-      $("#signin-own-cloud-box").addClass("none");
+      $("#signin-own-cloud-box").addClass("collapse");
     }
+  }).trigger("change");
+
+  $("a.btn-back:link, #storage-menu ul a:link").on("click", function (event) {
+    var target = $($(event.currentTarget).prop("hash"));
+    setCurrentSection(target);
+    event.preventDefault();
   });
 
-  $("#storage-menu ul li a:link").on("click", function (event) {
-    var target = $($(event.currentTarget).prop("hash"));
-    setCurrentSection(target);
-    event.preventDefault();
+  $("#passwords ul").on("click", "li", function (event) {
+    var li = $(event.target).parentsUntil("ul").last();
+    console.log(arguments, li);
+    $("#passwords-action-menu").removeClass("fade-out").addClass("fade-in");
   });
-  $("a.btn-back:link").on("click", function (event) {
-    var target = $($(event.currentTarget).prop("hash"));
-    setCurrentSection(target);
+  $("#passwords-action-menu form").on("submit", function (event) {
     event.preventDefault();
+    $("#passwords-action-menu").removeClass("fade-in").addClass("fade-out");
   });
 });

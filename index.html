@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, user-scalable=no" />
-  <title>Simple Fx Sync</title>
+  <title>Fx Sync Client</title>
   <!-- Building blocks -->
+  <link rel="stylesheet" href="assets/css/building-blocks/style/variables.css">
+  <link rel="stylesheet" href="assets/css/building-blocks/style/animations.css">
   <link rel="stylesheet" href="assets/css/building-blocks/style/action_menu.css">
   <link rel="stylesheet" href="assets/css/building-blocks/style/buttons.css">
   <link rel="stylesheet" href="assets/css/building-blocks/style/confirm.css">
@@ -61,14 +63,15 @@
 
     <section id="index" role="region" class="current">
       <header class="fixed">
-        <h1>Simple Fx Sync</h1>
+        <h1>Fx Sync Client</h1>
       </header>
       <article class="scrollable header">
         <progress id="signin-progress" class="pack-activity hidden" max="100" value="0"></progress>
+
+        <header>
+          <h2>Sign in</h2>
+        </header>
         <form id="signin-form">
-          <header>
-            <h2>Sign in</h2>
-          </header>
           <p>
             <input type="email" name="email" placeholder="mail address" required>
             <input type="password" name="password" placeholder="password" required>
@@ -78,8 +81,7 @@
               <span>Use own cloud server</span>
             </span>
 
-            <fieldset class="none" id="signin-own-cloud-box">
-              <legend>Cloud Server</legend>
+            <fieldset class="collapse" id="signin-own-cloud-box">
               <input type="text" name="fxaServerUrl" placeholder="FxA auth server">
               <input type="text" name="syncAuthUrl" placeholder="Sync auth server">
             </fieldset>
@@ -93,7 +95,7 @@
     <section id="storage-menu" role="region">
       <header class="fixed">
         <a class="sidebar-toggle" href="javascript:void(0);"><span class="icon icon-menu">show sidebar</span></a>
-        <h1>Simple Fx Sync</h1>
+        <h1>Fx Sync Client</h1>
       </header>
       <article class="scrollable header">
         <div data-type="list">
@@ -102,7 +104,7 @@
               <a href="#bookmarks"><p>Bookmarks</p></a>
             </li>
             <li>
-              <a href="javascript:void(0);"><p>Password</p></a>
+              <a href="#passwords"><p>Passwords</p></a>
             </li>
           </ul>
         </div>
@@ -117,15 +119,38 @@
       <article class="scrollable header">
         <div data-type="list">
           <ul>
-            <li>
-            <a href="javascript:void(0);"><p>Title<em>a</em></p><p>Desc</p></a>
-            </li>
-            <li>
-              <a href="javascript:void(0);"><p>Password</p></a>
+            <li aria-disabled="true">
+              <p>(No items)</p>
             </li>
           </ul>
         </div>
       </article>
+    </section>
+
+    <section id="passwords" role="region">
+      <header class="fixed">
+        <a class="btn-back" href="#storage-menu"><span class="icon icon-back">back</span></a>
+        <h1>Sync::Passwords</h1>
+      </header>
+      <article class="scrollable header">
+        <div data-type="list">
+          <ul>
+            <li aria-disabled="true">
+              <p>(No items)</p>
+            </li>
+          </ul>
+        </div>
+      </article>
+    </section>
+    <section id="passwords-action-menu" data-position="back" class="fullscreen fade-out">
+      <form role="dialog" data-type="action">
+        <header></header>
+        <menu>
+          <button>Copy Username</button>
+          <button>Copy Password</button>
+          <button>Cancel</button>
+        </menu>
+      </form>
     </section>
 
   </section>

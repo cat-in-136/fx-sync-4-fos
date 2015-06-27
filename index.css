@@ -5,9 +5,11 @@ section[role=region] > header:first-child {
   color: #ffffff;
 }
 
-.none {
+.collapse {
   display: none;
+  opacity: 0;
 }
+
 .pack-checkbox-box .pack-checkbox ~ span,
 .pack-radio-box .pack-radio ~ span,
 .pack-switch-box .pack-switch ~ span {
@@ -41,4 +43,16 @@ section.previous[role="region"] {
 .sidebar-opened section.current[role="region"] {
   transform: translateX(80%);
   -webkit-transform: translateX(80%);
+}
+*[data-position="back"] {
+  z-index: -1;
+}
+.fade-in[data-position="back"] {
+  z-index: 120;
+  animation: var(--transitions-title) ease 0s normal forwards;
+}
+
+
+#signin-form {
+  padding: 1rem 1.5rem;
 }
