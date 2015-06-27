@@ -23,12 +23,13 @@ $(function () {
     var list = $("#bookmarks article ul");
     list.empty();
     console.debug(bookmarks); // TODO to be removed
-    bookmarks.forEach(function (bookmark) {
+    bookmarks.forEach(function (bookmark, index, bookmarks) {
       if (bookmark.type != "query") {
         var item = $($.parseHTML('<li><a href="javascript:void(0);"><p></p><p></p></a></li>'));
         $("a:link", item).prop("href", bookmark.bmkUri);
         $("a:link p:first-child", item).text(bookmark.title);
         $("a:link p:last-child", item).text(bookmark.bmkUri);
+        item.data("index-num", index);
         list.append(item);
       }
     });
@@ -40,10 +41,11 @@ $(function () {
     var list = $("#passwords article ul");
     list.empty();
     console.debug(passwords); // TODO to be removed
-    passwords.forEach(function (password) {
+    passwords.forEach(function (password, index, passwords) {
       var item = $($.parseHTML('<li><p></p><p></p></li>'));
       $("p:first-child", item).text(password.hostname);
       $("p:last-child", item).text(password.username);
+      item.data("index-num", index);
       list.append(item);
     });
   }
@@ -117,11 +119,19 @@ $(function () {
 
   $("#passwords ul").on("click", "li", function (event) {
     var li = $(event.target).parentsUntil("ul").last();
-    console.log(arguments, li);
-    $("#passwords-action-menu").removeClass("fade-out").addClass("fade-in");
+    var password = passwords[parseInt(li.data("index-num"), 10)];
+
+    $("#passwords-action-menu > header h1").text(password.hostname);
+    $("#passwords-action-username").val(password.username);
+    $("#passwords-action-password").val(password.password);
+
+    setCurrentSection("#passwords-action-menu");
+    $('#passwords-action-password').select();
   });
   $("#passwords-action-menu form").on("submit", function (event) {
     event.preventDefault();
-    $("#passwords-action-menu").removeClass("fade-in").addClass("fade-out");
+  });
+  $('#passwords-action-menu input[type="text"]').on("focus", function (event) {
+    $(event.target).select();
   });
 });

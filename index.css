@@ -56,3 +56,9 @@ section.previous[role="region"] {
 #signin-form {
   padding: 1rem 1.5rem;
 }
+
+#passwords-action-menu input[type="text"] {
+  border-style: none ! important;
+  box-shadow: none;
+  background-color: transparent;
+}

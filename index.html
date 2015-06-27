@@ -142,15 +142,23 @@
         </div>
       </article>
     </section>
-    <section id="passwords-action-menu" data-position="back" class="fullscreen fade-out">
-      <form role="dialog" data-type="action">
-        <header></header>
-        <menu>
-          <button>Copy Username</button>
-          <button>Copy Password</button>
-          <button>Cancel</button>
-        </menu>
-      </form>
+    <section id="passwords-action-menu" role="region">
+      <header>
+        <a class="btn-back" href="#passwords"><span class="icon icon-back">back</span></a>
+        <h1></h1>
+      </header>
+      <article class="scrollable">
+        <header><h2><label for="passwords-action-username">User name</label></h2></header>
+        <input type="text" id="passwords-action-username" readonly="true">
+        <header><h2><label for="passwords-action-password">Password</label></h2></header>
+        <input type="text" id="passwords-action-password" readonly="true" style="filter:url(#chalk-and-sponge);">
+      </article>
+      <svg>
+        <filter id="chalk-and-sponge">
+          <feTurbulence baseFrequency="0.125" type="fractalNoise" result="result1"></feTurbulence>
+          <feDisplacementMap in="SourceGraphic" in2="result1" scale="30" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+        </filter>
+      </svg>
     </section>
 
   </section>
