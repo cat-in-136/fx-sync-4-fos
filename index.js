@@ -136,4 +136,6 @@ $(function () {
   $('#passwords-action-menu input[type="text"]').on("focus", function (event) {
     $(event.target).select();
   });
+  $("#passwords-action-menu svg feTurbulence").attr("seed", Math.random() * 1000)
+
 });
