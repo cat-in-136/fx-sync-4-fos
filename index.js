@@ -42,11 +42,13 @@ $(function () {
     list.empty();
     console.debug(passwords); // TODO to be removed
     passwords.forEach(function (password, index, passwords) {
-      var item = $($.parseHTML('<li><p></p><p></p></li>'));
-      $("p:first-child", item).text(password.hostname);
-      $("p:last-child", item).text(password.username);
-      item.data("index-num", index);
-      list.append(item);
+      if (!password.deleted) {
+        var item = $($.parseHTML('<li><p></p><p></p></li>'));
+        $("p:first-child", item).text(password.hostname);
+        $("p:last-child", item).text(password.username);
+        item.data("index-num", index);
+        list.append(item);
+      }
     });
   }
 
@@ -118,7 +120,7 @@ $(function () {
   });
 
   $("#passwords ul").on("click", "li", function (event) {
-    var li = $(event.target).parentsUntil("ul").last();
+    var li = $(event.currentTarget);
     var password = passwords[parseInt(li.data("index-num"), 10)];
 
     $("#passwords-action-menu > header h1").text(password.hostname);
