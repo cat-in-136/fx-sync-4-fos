@@ -20,17 +20,46 @@ $(function () {
     bookmarks = aBookmarks;
     if (bookmarks.length == 0) { return; }
 
+    console.debug(bookmarks); // TODO to be removed
+    setBookmarksPath(undefined);
+  }
+  function setBookmarksPath(aPath) {
+    if (aPath == undefined) { aPath = "places"; }
     var list = $("#bookmarks article ul");
     list.empty();
-    console.debug(bookmarks); // TODO to be removed
-    bookmarks.forEach(function (bookmark, index, bookmarks) {
-      if (bookmark.type != "query") {
-        var item = $($.parseHTML('<li><a href="javascript:void(0);" target="_blank"><p></p><p></p></a></li>'));
-        $("a:link", item).prop("href", bookmark.bmkUri);
-        $("a:link p:first-child", item).text(bookmark.title);
-        $("a:link p:last-child", item).text(bookmark.bmkUri);
-        item.data("index-num", index);
+    var currentBookmark = bookmarks.find(function(v){return v.id == aPath});
+    if (currentBookmark && currentBookmark.parentid) {
+      var parentBookmark = bookmarks.find(function(v){return v.id == currentBookmark.parentid});
+      if (parentBookmark) {
+        var item = $($.parseHTML('<li data-bookmark-type="folder"><aside><span class="gaia-icon icon-browser-back" data-type="img"></span></aside><p></p></li>'));
+        $("p", item).text(parentBookmark.title || ("("+parentBookmark.id+")"));
+        item.data("index-num", bookmarks.indexOf(parentBookmark));
         list.append(item);
+      }
+    }
+    if (currentBookmark) {
+      list.append($("<li>").append($("<header>").text(currentBookmark.title || ("("+currentBookmark.id+")"))))
+    }
+    bookmarks.forEach(function (bookmark, index, bookmarks) {
+      if (bookmark.parentid == aPath) {
+        if ((bookmark.type == "bookmark") || (bookmark.type == "microsummary")) {
+          var item = $($.parseHTML('<li><a href="javascript:void(0);" target="_blank"><p></p><p></p></a></li>'));
+          $("a:link", item).prop("href", bookmark.bmkUri);
+          $("p:first-child", item).text(bookmark.title);
+          $("p:last-child", item).text(bookmark.bmkUri);
+          item.data("index-num", index);
+          list.append(item);
+        } else if (bookmark.type == "folder") {
+          var item = $($.parseHTML('<li data-bookmark-type="folder"><p></p></li>'));
+          $("p", item).text(bookmark.title || ("("+bookmark.id+")"));
+          item.data("index-num", index);
+          list.append(item);
+        } else if (bookmark.type == "separator") {
+          var item = $($.parseHTML('<li data-bookmark-type="separator"><p></p></li>'));
+          item.data("index-num", index);
+          list.append(item);
+        }
+        // not supported: query, livemark
       }
     });
   }
@@ -117,6 +146,13 @@ $(function () {
     var target = $($(event.currentTarget).prop("hash"));
     setCurrentSection(target);
     event.preventDefault();
+  });
+
+  $("#bookmarks ul").on("click", 'li[data-bookmark-type="folder"]', function (event) {
+    var li = $(event.currentTarget);
+    var bookmark = bookmarks[parseInt(li.data("index-num"), 10)];
+
+    setBookmarksPath(bookmark.id);
   });
 
   $("#passwords ul").on("click", "li", function (event) {

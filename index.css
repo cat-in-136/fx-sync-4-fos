@@ -57,8 +57,19 @@ section.previous[role="region"] {
   padding: 1rem 1.5rem;
 }
 
+#bookmarks ul li[data-bookmark-type="folder"] {
+  cursor: pointer;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+#bookmarks ul li[data-bookmark-type="separator"] {
+  height: 5px;
+}
+
 #passwords-action-menu input[type="text"] {
   border-style: none ! important;
   box-shadow: none;
   background-color: transparent;
 }
+
