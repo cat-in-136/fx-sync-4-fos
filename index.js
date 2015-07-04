@@ -19,14 +19,15 @@ $(function () {
   function setBookmarks(aBookmarks) {
     bookmarks = aBookmarks;
     if (bookmarks.length == 0) { return; }
-
     console.debug(bookmarks); // TODO to be removed
+
     setBookmarksPath(undefined);
   }
   function setBookmarksPath(aPath) {
     if (aPath == undefined) { aPath = "places"; }
     var list = $("#bookmarks article ul");
     list.empty();
+
     var currentBookmark = bookmarks.find(function(v){return v.id == aPath});
     if (currentBookmark && currentBookmark.parentid) {
       var parentBookmark = bookmarks.find(function(v){return v.id == currentBookmark.parentid});
@@ -64,12 +65,12 @@ $(function () {
     });
   }
   function setPasswords(aPasswords) {
-    passwords = aPasswords;
-    if (passwords.length == 0) { return; }
-
     var list = $("#passwords article ul");
     list.empty();
+    passwords = aPasswords;
     console.debug(passwords); // TODO to be removed
+    if (passwords.length == 0) { return; }
+
     passwords.forEach(function (password, index, passwords) {
       if (!password.deleted) {
         var item = $($.parseHTML('<li><p></p><p></p></li>'));
@@ -83,6 +84,12 @@ $(function () {
 
   $("*[data-type=sidebar] menu[type=toolbar] a:link").on("click", function () {
     $("#content").removeClass("sidebar-opened");
+  });
+  $("#sign-out-menuitem").on("click", function () {
+    $("#content").removeClass("sidebar-opened");
+    setCurrentSection("#index");
+    setBookmarks([]);
+    setPasswords([]);
   });
   $("a.sidebar-toggle:link").on("click", function () {
     $("#content").toggleClass("sidebar-opened");
