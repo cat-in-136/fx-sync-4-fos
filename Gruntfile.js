@@ -3,7 +3,7 @@
 module.exports = function (grunt) {
   grunt.initConfig({
     clean: {
-      build: { src: ["assets"] }
+      build: { src: ["assets", "*.zip"] }
     },
     copy: {
       install: {
@@ -30,12 +30,27 @@ module.exports = function (grunt) {
           },
         ]
       }
+    },
+    zip: {
+      "package": {
+        dest: "fx-sync-4-fos.zip",
+        src: [
+          "assets/**/*",
+          "data/**/*",
+          "img/**/*",
+          "js/**/*",
+          "index.*",
+          "LICENSE",
+          "manifest.webapp"
+        ]
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-zip');
 
-  grunt.registerTask("build", ["clean:build", "copy:install"]);
+  grunt.registerTask("build", ["clean:build", "copy:install", "zip:package"]);
   grunt.registerTask("default", ["build"]);
 }
