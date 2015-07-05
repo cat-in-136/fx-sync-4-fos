@@ -85,11 +85,44 @@ $(function () {
   $("*[data-type=sidebar] menu[type=toolbar] a:link").on("click", function () {
     $("#content").removeClass("sidebar-opened");
   });
+  $("#reload-menuitem").on("click", function () {
+    $("#content").removeClass("sidebar-opened");
+    setCurrentSection("#index");
+
+    function failSignin(error) {
+      utils.status.show("ERROR: " + error.message);
+
+      $("#signin-form input, #signin-form button").prop("disabled", false);
+      $("#signin-progress").addClass("hidden");
+    }
+
+    try {
+      sync.fetch("bookmarks").then(function (results) {
+        setBookmarks(results);
+
+        return sync.fetch("passwords");
+      }).then(function (results) {
+        setPasswords(results);
+
+        return P();
+      }).done(function () {
+        utils.status.show("Reloaded");
+        setCurrentSection("#storage-menu");
+      }, function (error) {
+        failSignin(error);
+        $('input[name="password"]', signinForm).focus();
+      });
+    } catch (ex) {
+      failSignin(ex);
+    }
+  });
   $("#sign-out-menuitem").on("click", function () {
     $("#content").removeClass("sidebar-opened");
     setCurrentSection("#index");
     setBookmarks([]);
     setPasswords([]);
+    $("#signin-form input, #signin-form button").prop("disabled", false);
+    $("#signin-progress").addClass("hidden");
   });
   $("a.sidebar-toggle:link").on("click", function () {
     $("#content").toggleClass("sidebar-opened");
