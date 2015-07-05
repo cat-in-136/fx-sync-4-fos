@@ -44,12 +44,19 @@ section.previous[role="region"] {
   transform: translateX(80%);
   -webkit-transform: translateX(80%);
 }
+*[data-type="sidebar"] {
+  visibility: hidden;
+  transition: visibility var(--transition-time) linear 0s;
+}
+.sidebar-opened *[data-type="sidebar"] {
+  visibility: inherit;
+}
 *[data-position="back"] {
   z-index: -1;
 }
 .fade-in[data-position="back"] {
   z-index: 120;
-  animation: var(--transitions-title) ease 0s normal forwards;
+  animation: var(--transition-time) ease 0s normal forwards;
 }
 
 
