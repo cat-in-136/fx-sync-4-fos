@@ -1,6 +1,6 @@
 {
   "version": "0.0.0",
-  "name": "Simple Fx Sync",
+  "name": "SimpleFxSync",
   "description": "Simple Firefox Sync Client for Firefox OS",
   "launch_path": "/index.html",
   "icons": {
