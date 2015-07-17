@@ -31,6 +31,18 @@ module.exports = function (grunt) {
         ]
       }
     },
+    replace: {
+      remove_eval_on_crypt: {
+        src: "assets/js/fx-sync.js",
+        dest: "assets/js/fx-sync.js",
+        replacements: [
+          {
+            from: "return eval(this.code); // maybe...",
+            to: "throw new Error('eval call');//return eval(this.code); // maybe...",
+          }
+        ]
+      }
+    },
     zip: {
       "package": {
         dest: "fx-sync-4-fos.zip",
@@ -49,8 +61,9 @@ module.exports = function (grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-text-replace');
   grunt.loadNpmTasks('grunt-zip');
 
-  grunt.registerTask("build", ["clean:build", "copy:install", "zip:package"]);
+  grunt.registerTask("build", ["clean:build", "copy:install", "replace:remove_eval_on_crypt", "zip:package"]);
   grunt.registerTask("default", ["build"]);
 }

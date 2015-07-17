@@ -27949,7 +27949,7 @@ Script.prototype.runInContext = function (context) {
 };
 
 Script.prototype.runInThisContext = function () {
-    return eval(this.code); // maybe...
+    throw new Error('eval call');//return eval(this.code); // maybe...
 };
 
 Script.prototype.runInNewContext = function (context) {
