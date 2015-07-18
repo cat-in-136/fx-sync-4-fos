@@ -41,6 +41,16 @@ module.exports = function (grunt) {
             to: "throw new Error('eval call');//return eval(this.code); // maybe...",
           }
         ]
+      },
+      remove_broken_set_timeout: {
+        src: "assets/js/building-blocks/action_menu.js",
+        dest: "assets/js/building-blocks/action_menu.js",
+        replacements: [
+          {
+            from: "window.setTimeout(this.hide.bind(this));",
+            to: "window.setTimeout(function(v){v.hide();}, 4, this);//window.setTimeout(this.hide.bind(this));",
+          }
+        ]
       }
     },
     zip: {
@@ -64,6 +74,12 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-text-replace');
   grunt.loadNpmTasks('grunt-zip');
 
-  grunt.registerTask("build", ["clean:build", "copy:install", "replace:remove_eval_on_crypt", "zip:package"]);
+  grunt.registerTask("build", [
+    "clean:build",
+    "copy:install",
+    "replace:remove_eval_on_crypt",
+    "replace:remove_broken_set_timeout",
+    "zip:package"
+  ]);
   grunt.registerTask("default", ["build"]);
 }

@@ -103,7 +103,7 @@ utils.ActionMenu = (function() {
           }
 
           // The component is auto-closed
-          window.setTimeout(this.hide.bind(this));
+          window.setTimeout(function(v){v.hide();}, 4, this);//window.setTimeout(this.hide.bind(this));
 
           typeof this.onclick === 'function' && this.onclick(evt);
           var callbacks = this.callbacks;
