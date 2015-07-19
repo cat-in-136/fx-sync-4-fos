@@ -38,7 +38,6 @@
 
   <link rel="stylesheet" href="index.css">
 
-  <!--script type="application/javascript" defer src="assets/js/jquery.js"></script-->
   <script type="application/javascript" defer src="assets/js/fx-sync.js"></script>
 
   <script type="application/javascript" defer src="assets/js/building-blocks/status.js"></script>
@@ -75,8 +74,14 @@
         </header>
         <form id="signin-form">
           <p>
-            <input type="email" name="email" placeholder="mail address" required>
-            <input type="password" name="password" placeholder="password" required>
+            <label>
+              <span>E-mail</span>
+              <input type="email" name="email" required>
+            </label>
+            <label>
+              <span>Password</span>
+              <input type="password" name="password" required>
+            </label>
 
             <span class="pack-checkbox-box">
               <label class="pack-checkbox"><input type="checkbox" name="own-cloud"><span></span></label>
@@ -84,8 +89,14 @@
             </span>
 
             <fieldset class="collapse" id="signin-own-cloud-box">
-              <input type="text" name="fxaServerUrl" placeholder="FxA auth server">
-              <input type="text" name="syncAuthUrl" placeholder="Sync auth server">
+              <label>
+                <span>FxA auth server</span>
+                <input type="text" name="fxaServerUrl">
+              </label>
+              <label>
+                <span>Sync auth server</span>
+                <input type="text" name="syncAuthUrl">
+              </label>
             </fieldset>
 
             <button class="recommend" disabled>Sign in</button>
