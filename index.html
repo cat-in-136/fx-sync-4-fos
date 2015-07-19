@@ -51,14 +51,14 @@
     <section data-type="sidebar">
       <header>
         <menu type="toolbar">
-          <a href="javascript:void(0);">Done</a>
+          <a>Done</a>
         </menu>
         <h1></h1>
       </header>
       <nav>
         <ul>
-          <li><a href="javascript:void(0);" id="reload-menuitem">Reload</a></li>
-          <li><a href="javascript:void(0);" id="sign-out-menuitem">Sign out</a></li>
+          <li><a id="reload-menuitem">Reload</a></li>
+          <li><a id="sign-out-menuitem">Sign out</a></li>
         </ul>
       </nav>
     </section>
@@ -108,17 +108,17 @@
 
     <section id="storage-menu" role="region">
       <header class="fixed">
-        <a class="sidebar-toggle" href="javascript:void(0);"><span class="icon icon-menu">show sidebar</span></a>
+        <a class="sidebar-toggle"><span class="icon icon-menu">show sidebar</span></a>
         <h1>Fx Sync Client</h1>
       </header>
       <article class="scrollable header">
         <div data-type="list">
           <ul>
             <li>
-              <a href="#bookmarks"><p>Bookmarks</p></a>
+              <a data-panel="#bookmarks"><p>Bookmarks</p></a>
             </li>
             <li>
-              <a href="#passwords"><p>Passwords</p></a>
+              <a data-panel="#passwords"><p>Passwords</p></a>
             </li>
           </ul>
         </div>
@@ -127,7 +127,7 @@
 
     <section id="bookmarks" role="region">
       <header class="fixed">
-        <a class="btn-back" href="#storage-menu"><span class="icon icon-back">back</span></a>
+        <a class="btn-back" data-panel="#storage-menu"><span class="icon icon-back">back</span></a>
         <h1>Sync::Bookmarks</h1>
       </header>
       <article class="scrollable header">
@@ -140,7 +140,7 @@
 
     <section id="passwords" role="region">
       <header class="fixed">
-        <a class="btn-back" href="#storage-menu"><span class="icon icon-back">back</span></a>
+        <a class="btn-back" data-panel="#storage-menu"><span class="icon icon-back">back</span></a>
         <h1>Sync::Passwords</h1>
       </header>
       <article class="scrollable header">
@@ -152,7 +152,7 @@
     </section>
     <section id="passwords-action-menu" role="region">
       <header>
-        <a class="btn-back" href="#passwords"><span class="icon icon-back">back</span></a>
+        <a class="btn-back" data-panel="#passwords"><span class="icon icon-back">back</span></a>
         <h1></h1>
       </header>
       <article class="scrollable">

@@ -122,7 +122,7 @@ window.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  document.querySelector("*[data-type=sidebar] menu[type=toolbar] a:link").addEventListener("click", function () {
+  document.querySelector("*[data-type=sidebar] menu[type=toolbar] a").addEventListener("click", function () {
     document.querySelector("#content").classList.remove("sidebar-opened");
   }, false);
   document.querySelector("#reload-menuitem").addEventListener("click", function () {
@@ -167,7 +167,7 @@ window.addEventListener("DOMContentLoaded", function() {
     });
     document.querySelector("#signin-progress").classList.add("hidden");
   }, false);
-  document.querySelector("a.sidebar-toggle:link").addEventListener("click", function () {
+  document.querySelector("a.sidebar-toggle").addEventListener("click", function () {
     document.querySelector("#content").classList.toggle("sidebar-opened");
   }, false);
   Array.forEach(document.querySelectorAll(".pack-checkbox-box .pack-checkbox ~ span, .pack-radio-box .pack-radio ~ span, .pack-switch-box .pack-switch ~ span"), function(v) {
@@ -228,9 +228,9 @@ window.addEventListener("DOMContentLoaded", function() {
   }, false);
   document.querySelector('#signin-form input[name="own-cloud"]').dispatchEvent(new Event("change"));
 
-  Array.forEach(document.querySelectorAll("a.btn-back:link, #storage-menu ul a:link"), function (v){
+  Array.forEach(document.querySelectorAll("a.btn-back[data-panel], #storage-menu ul a[data-panel]"), function (v){
     v.addEventListener("click", function (event) {
-      var target = event.currentTarget.hash;
+      var target = event.currentTarget.getAttribute("data-panel");
       setCurrentSection(target);
       event.preventDefault();
     }, false);
