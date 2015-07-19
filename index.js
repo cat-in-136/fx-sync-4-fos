@@ -63,6 +63,7 @@ window.addEventListener("DOMContentLoaded", function() {
           item.querySelector('p:first-child').appendChild(document.createTextNode(bookmark.title));
           item.querySelector('p:last-child').appendChild(document.createTextNode(bookmark.bmkUri));
 
+          item.classList.add("bookmark-item");
           item.setAttribute("data-index-num", index);
           list.appendChild(item);
         } else if (bookmark.type == "folder") {
@@ -72,25 +73,32 @@ window.addEventListener("DOMContentLoaded", function() {
           item.getElementsByTagName("p")[0].appendChild(
             document.createTextNode(bookmark.title || ("("+bookmark.id+")"))
           );
+          item.classList.add("bookmark-item");
           item.setAttribute("data-index-num", index);
           list.appendChild(item);
         } else if (bookmark.type == "separator") {
           var item = document.createElement("li");
           item.setAttribute("data-bookmark-type", "separator")
           item.innerHTML = "<p></p>";
+          item.classList.add("bookmark-item");
           item.setAttribute("data-index-num", index);
           list.appendChild(item);
         }
         // not supported: query, livemark
       }
     });
+    if (list.querySelectorAll("li.bookmark-item").length == 0) {
+      var item = document.createElement("li");
+      item.setAttribute("aria-disabled", "true")
+      item.innerHTML = "<p>(No item)</p>";
+      list.appendChild(item);
+    }
   }
   function setPasswords(aPasswords) {
     var list = document.querySelector("#passwords article ul");
     list.innerHTML = "";
     passwords = aPasswords;
     console.debug(passwords); // TODO to be removed
-    if (passwords.length == 0) { return; }
 
     passwords.forEach(function (password, index, passwords) {
       if (!password.deleted) {
@@ -106,6 +114,12 @@ window.addEventListener("DOMContentLoaded", function() {
         list.appendChild(item);
       }
     });
+    if (list.querySelectorAll("li").length == 0) {
+      var item = document.createElement("li");
+      item.setAttribute("aria-disabled", "true")
+      item.innerHTML = "<p>(No item)</p>";
+      list.appendChild(item);
+    }
   }
 
   document.querySelector("*[data-type=sidebar] menu[type=toolbar] a:link").addEventListener("click", function () {
