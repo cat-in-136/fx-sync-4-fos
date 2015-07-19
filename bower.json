@@ -14,8 +14,7 @@
   ],
   "dependencies": {
     "building-blocks": "gh-pages",
-    "fos-fx-sync": "cat-in-136/node-fx-sync",
-    "jquery": "~2.1.4"
+    "fos-fx-sync": "cat-in-136/node-fx-sync"
   },
   "exportsOverride": {
     "building-blocks": {

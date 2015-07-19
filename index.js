@@ -1,4 +1,4 @@
-$(function () {
+window.addEventListener("DOMContentLoaded", function() {
   var P = require("p-promise");
   var Sync = require("fx-sync")();
   var sync = undefined;
@@ -6,14 +6,16 @@ $(function () {
   var passwords = undefined;
 
   function setCurrentSection(panel) {
-    var panel = $(panel);
-    var current = $('section.current[role="region"]');
-    if (panel.hasClass("previous")) {
-      current.removeClass("current");
-      panel.removeClass("previous").addClass("current");
+    var panel = document.querySelector(panel);
+    var current = document.querySelector('section.current[role="region"]');
+    if (panel.classList.contains("previous")) {
+      current.classList.remove("current");
+      panel.classList.remove("previous");
+      panel.classList.add("current");
     } else {
-      current.removeClass("current").addClass("previous");
-      panel.addClass("current");
+      current.classList.remove("current");
+      current.classList.add("previous");
+      panel.classList.add("current");
     }
   }
   function setBookmarks(aBookmarks) {
@@ -25,75 +27,100 @@ $(function () {
   }
   function setBookmarksPath(aPath) {
     if (aPath == undefined) { aPath = "places"; }
-    var list = $("#bookmarks article ul");
-    list.empty();
+    var list = document.querySelector("#bookmarks article ul");
+    list.innerHTML = "";
 
     var currentBookmark = bookmarks.find(function(v){return v.id == aPath});
     if (currentBookmark && currentBookmark.parentid) {
       var parentBookmark = bookmarks.find(function(v){return v.id == currentBookmark.parentid});
+      if ((!parentBookmark) && (currentBookmark.parentid === "places")) {
+        parentBookmark = { id: "places" };
+      }
       if (parentBookmark) {
-        var item = $($.parseHTML('<li data-bookmark-type="folder"><aside><span class="gaia-icon icon-browser-back" data-type="img"></span></aside><p></p></li>'));
-        $("p", item).text(parentBookmark.title || ("("+parentBookmark.id+")"));
-        item.data("index-num", bookmarks.indexOf(parentBookmark));
-        list.append(item);
+        var item = document.createElement("li");
+        item.setAttribute("data-bookmark-type", "folder");
+        item.innerHTML = '<aside><span class="gaia-icon icon-browser-back" data-type="img"></span></aside><p></p>';
+        item.querySelector("p").appendChild(
+          document.createTextNode(parentBookmark.title || ("("+parentBookmark.id+")"))
+        );
+        item.setAttribute("data-index-num", bookmarks.indexOf(parentBookmark));
+        list.appendChild(item);
       }
     }
     if (currentBookmark) {
-      list.append($("<li>").append($("<header>").text(currentBookmark.title || ("("+currentBookmark.id+")"))))
+      var item = document.createElement("li");
+      var header = document.createElement("header");
+
+      item.appendChild(header);
+      header.appendChild(document.createTextNode(currentBookmark.title || ("("+currentBookmark.id+")")))
     }
     bookmarks.forEach(function (bookmark, index, bookmarks) {
       if (bookmark.parentid == aPath) {
         if ((bookmark.type == "bookmark") || (bookmark.type == "microsummary")) {
-          var item = $($.parseHTML('<li><a href="javascript:void(0);" target="_blank"><p></p><p></p></a></li>'));
-          $("a:link", item).prop("href", bookmark.bmkUri);
-          $("p:first-child", item).text(bookmark.title);
-          $("p:last-child", item).text(bookmark.bmkUri);
-          item.data("index-num", index);
-          list.append(item);
+          var item = document.createElement("li");
+          item.innerHTML = '<a href="" target="_blank"><p></p><p></p></a>';
+          item.querySelector('a:link').href = bookmark.bmkUri;
+          item.querySelector('p:first-child').appendChild(document.createTextNode(bookmark.title));
+          item.querySelector('p:last-child').appendChild(document.createTextNode(bookmark.bmkUri));
+
+          item.setAttribute("data-index-num", index);
+          list.appendChild(item);
         } else if (bookmark.type == "folder") {
-          var item = $($.parseHTML('<li data-bookmark-type="folder"><p></p></li>'));
-          $("p", item).text(bookmark.title || ("("+bookmark.id+")"));
-          item.data("index-num", index);
-          list.append(item);
+          var item = document.createElement("li");
+          item.innerHTML = '<p></p>';
+          item.setAttribute("data-bookmark-type", "folder");
+          item.getElementsByTagName("p")[0].appendChild(
+            document.createTextNode(bookmark.title || ("("+bookmark.id+")"))
+          );
+          item.setAttribute("data-index-num", index);
+          list.appendChild(item);
         } else if (bookmark.type == "separator") {
-          var item = $($.parseHTML('<li data-bookmark-type="separator"><p></p></li>'));
-          item.data("index-num", index);
-          list.append(item);
+          var item = document.createElement("li");
+          item.setAttribute("data-bookmark-type", "separator")
+          item.innerHTML = "<p></p>";
+          item.setAttribute("data-index-num", index);
+          list.appendChild(item);
         }
         // not supported: query, livemark
       }
     });
   }
   function setPasswords(aPasswords) {
-    var list = $("#passwords article ul");
-    list.empty();
+    var list = document.querySelector("#passwords article ul");
+    list.innerHTML = "";
     passwords = aPasswords;
     console.debug(passwords); // TODO to be removed
     if (passwords.length == 0) { return; }
 
     passwords.forEach(function (password, index, passwords) {
       if (!password.deleted) {
-        var item = $($.parseHTML('<li><p></p><p></p></li>'));
-        $("p:first-child", item).text(password.hostname);
-        $("p:last-child", item).text(password.username);
-        item.data("index-num", index);
-        list.append(item);
+        var item = document.createElement("li");
+        item.innerHTML = '<p></p><p></p>';
+        item.querySelector('p:first-child').appendChild(
+          document.createTextNode(password.hostname)
+        );
+        item.querySelector('p:last-child').appendChild(
+          document.createTextNode(password.username)
+        );
+        item.setAttribute("data-index-num", index);
+        list.appendChild(item);
       }
     });
   }
 
-  $("*[data-type=sidebar] menu[type=toolbar] a:link").on("click", function () {
-    $("#content").removeClass("sidebar-opened");
-  });
-  $("#reload-menuitem").on("click", function () {
-    $("#content").removeClass("sidebar-opened");
+  document.querySelector("*[data-type=sidebar] menu[type=toolbar] a:link").addEventListener("click", function () {
+    document.querySelector("#content").classList.remove("sidebar-opened");
+  }, false);
+  document.querySelector("#reload-menuitem").addEventListener("click", function () {
+    document.querySelector("#content").classList.remove("sidebar-opened");
     setCurrentSection("#index");
 
     function failSignin(error) {
+      console.error(error);// DEBUG
       utils.status.show("ERROR: " + error.message);
 
-      $("#signin-form input, #signin-form button").prop("disabled", false);
-      $("#signin-progress").addClass("hidden");
+      Array.forEach(signinForm.querySelectorAll("#signin-form input, #signin-form button"), function(v) { v.disabled = true; });
+      document.querySelector("#signin-progress").classList.add("hidden");
     }
 
     try {
@@ -110,48 +137,52 @@ $(function () {
         setCurrentSection("#storage-menu");
       }, function (error) {
         failSignin(error);
-        $('input[name="password"]', signinForm).focus();
+        signinForm.querySelector('input[name="password"]').focus();
       });
     } catch (ex) {
       failSignin(ex);
     }
-  });
-  $("#sign-out-menuitem").on("click", function () {
-    $("#content").removeClass("sidebar-opened");
+  }, false);
+  document.querySelector("#sign-out-menuitem").addEventListener("click", function () {
+    document.querySelector("#content").classList.remove("sidebar-opened");
     setCurrentSection("#index");
     setBookmarks([]);
     setPasswords([]);
-    $("#signin-form input, #signin-form button").prop("disabled", false);
-    $("#signin-progress").addClass("hidden");
-  });
-  $("a.sidebar-toggle:link").on("click", function () {
-    $("#content").toggleClass("sidebar-opened");
-  });
-  $(".pack-checkbox-box .pack-checkbox ~ span, .pack-radio-box .pack-radio ~ span, .pack-switch-box .pack-switch ~ span").on("click", function (event) {
-    var check = $('input[type="checkbox"], input[type="radio"]', event.currentTarget.parentNode);
-    check.prop("checked", !check.prop("checked"));
-    check.change();
+    Array.forEach(document.querySelectorAll("#signin-form input, #signin-form button"), function (v) {
+      v.disabled = false;
+    });
+    document.querySelector("#signin-progress").classList.add("hidden");
+  }, false);
+  document.querySelector("a.sidebar-toggle:link").addEventListener("click", function () {
+    document.querySelector("#content").classList.toggle("sidebar-opened");
+  }, false);
+  Array.forEach(document.querySelectorAll(".pack-checkbox-box .pack-checkbox ~ span, .pack-radio-box .pack-radio ~ span, .pack-switch-box .pack-switch ~ span"), function(v) {
+    v.addEventListener("click", function (event) {
+      v.checked = !v.checked;
+      v.dispatchEvent(new Event("change"));
+    }, false);
   });
 
-  $("#signin-form *[disabled]").prop("disabled", false);
-  $("#signin-form").on("submit", function (event) {
-    var signinForm = $("#signin-form");
-    $("input, button", signinForm).prop("disabled", true);
-    $("#signin-progress").removeClass("hidden");
+  Array.forEach(document.querySelectorAll("#signin-form *[disabled]"), function(v) { v.disabled = false; });
+  document.querySelector("#signin-form").addEventListener("submit", function (event) {
+    var signinForm = document.querySelector("#signin-form");
+    Array.forEach(signinForm.querySelectorAll("input, button"), function(v) { v.disabled = true; });
+    document.querySelector("#signin-progress").classList.remove("hidden");
     event.preventDefault();
 
     function failSignin(error) {
+      console.error(error);// DEBUG
       utils.status.show("ERROR: " + error.message);
 
-      $("input, button", signinForm).prop("disabled", false);
-      $("#signin-progress").addClass("hidden");
+      Array.forEach(signinForm.querySelectorAll("input, button"), function(v) { v.disabled = false; });
+      document.querySelector("#signin-progress").classList.add("hidden");
     }
 
-    var email = $('input[name="email"]', signinForm).val();
-    var password = $('input[name="password"]', signinForm).val();
-    var ownCloud = $('input[name="own-cloud"]', signinForm).val();
-    var fxaServerUrl = (ownCloud)? $('input[name="fxaServerUrl"]', signinForm).val() : undefined;
-    var syncAuthUrl = (ownCloud)? $('input[name="syncAuthUrl"]', signinForm).val() : undefined;
+    var email = signinForm.querySelector('input[name="email"]').value;
+    var password = signinForm.querySelector('input[name="password"]').value;
+    var ownCloud = signinForm.querySelector('input[name="own-cloud"]').checked;
+    var fxaServerUrl = (ownCloud)? signinForm.querySelector('input[name="fxaServerUrl"]').value : undefined;
+    var syncAuthUrl = (ownCloud)? signinForm.querySelector('input[name="syncAuthUrl"]').value : undefined;
 
     try {
       sync = new Sync({ email: email, password: password }, { fxaServerUrl: fxaServerUrl, syncAuthUrl: syncAuthUrl });
@@ -168,50 +199,65 @@ $(function () {
         setCurrentSection("#storage-menu");
       }, function (error) {
         failSignin(error);
-        $('input[name="password"]', signinForm).focus();
+        signinForm.querySelector('input[name="password"]').focus();
       });
     } catch (ex) {
       failSignin(ex);
     }
-  });
-  $('#signin-form input[name="own-cloud"]').on('change', function (event) {
-    if ($(event.currentTarget).prop("checked")) {
-      $("#signin-own-cloud-box").removeClass("collapse");
+  }, false);
+  document.querySelector('#signin-form input[name="own-cloud"]').addEventListener('change', function (event) {
+    if (event.currentTarget.checked) {
+      document.querySelector("#signin-own-cloud-box").classList.remove("collapse");
     } else {
-      $("#signin-own-cloud-box").addClass("collapse");
+      document.querySelector("#signin-own-cloud-box").classList.add("collapse");
     }
-  }).trigger("change");
+  }, false);
+  document.querySelector('#signin-form input[name="own-cloud"]').dispatchEvent(new Event("change"));
 
-  $("a.btn-back:link, #storage-menu ul a:link").on("click", function (event) {
-    var target = $($(event.currentTarget).prop("hash"));
-    setCurrentSection(target);
-    event.preventDefault();
+  Array.forEach(document.querySelectorAll("a.btn-back:link, #storage-menu ul a:link"), function (v){
+    v.addEventListener("click", function (event) {
+      var target = event.currentTarget.hash;
+      setCurrentSection(target);
+      event.preventDefault();
+    }, false);
   });
 
-  $("#bookmarks ul").on("click", 'li[data-bookmark-type="folder"]', function (event) {
-    var li = $(event.currentTarget);
-    var bookmark = bookmarks[parseInt(li.data("index-num"), 10)];
+  document.querySelector("#bookmarks ul").addEventListener("click", function (event) {
+    var targets = this.querySelectorAll('li[data-bookmark-type="folder"]');
+    for (var elem = event.target; (elem != null) && (elem != this); elem = elem.parentNode) {
+      if (Array.indexOf(targets, elem) >= 0) {
+        var li = elem;
 
-    setBookmarksPath(bookmark.id);
+        var bookmark = bookmarks[parseInt(li.getAttribute("data-index-num"), 10)];
+        setBookmarksPath((bookmark)? bookmark.id : undefined);
+        break;
+      }
+    }
+  }, false);
+  document.querySelector("#passwords ul").addEventListener("click", function (event) {
+    var targets = this.querySelectorAll('li');
+    for (var elem = event.target; (elem != null) && (elem != this); elem = elem.parentNode) {
+      if (Array.indexOf(targets, elem) >= 0) {
+        var li = elem;
+
+        var password = passwords[parseInt(li.getAttribute("data-index-num"), 10)];
+
+        document.querySelector("#passwords-action-menu > header h1").innerHTML = password.hostname;
+        document.querySelector("#passwords-action-username").value = password.username;
+        document.querySelector("#passwords-action-password").value = password.password;
+
+        setCurrentSection("#passwords-action-menu");
+        document.querySelector('#passwords-action-password').focus();
+        document.querySelector('#passwords-action-password').select();
+        break;
+      }
+    }
+  }, false);
+  Array.forEach(document.querySelectorAll('#passwords-action-menu input[type="text"]'), function (v) {
+    v.addEventListener("focus", function (event) {
+      event.target.select();
+    }, false);
   });
+  document.querySelector("#passwords-action-menu svg feTurbulence").setAttribute("seed", Math.random() * 1000);
 
-  $("#passwords ul").on("click", "li", function (event) {
-    var li = $(event.currentTarget);
-    var password = passwords[parseInt(li.data("index-num"), 10)];
-
-    $("#passwords-action-menu > header h1").text(password.hostname);
-    $("#passwords-action-username").val(password.username);
-    $("#passwords-action-password").val(password.password);
-
-    setCurrentSection("#passwords-action-menu");
-    $('#passwords-action-password').select();
-  });
-  $("#passwords-action-menu form").on("submit", function (event) {
-    event.preventDefault();
-  });
-  $('#passwords-action-menu input[type="text"]').on("focus", function (event) {
-    $(event.target).select();
-  });
-  $("#passwords-action-menu svg feTurbulence").attr("seed", Math.random() * 1000)
-
-});
+}, false);

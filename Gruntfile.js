@@ -11,7 +11,6 @@ module.exports = function (grunt) {
           {
             expand: true, flatten: true,
             src: [
-              'bower_components/jquery/dist/jquery.js',
               'bower_components/fos-fx-sync/**/fx-sync.js',
             ],
             dest: "assets/js/"
