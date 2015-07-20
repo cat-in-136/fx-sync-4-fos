@@ -133,7 +133,8 @@ window.addEventListener("DOMContentLoaded", function() {
       console.error(error);// DEBUG
       utils.status.show("ERROR: " + error.message);
 
-      Array.forEach(signinForm.querySelectorAll("#signin-form input, #signin-form button"), function(v) { v.disabled = true; });
+      var signinForm = document.querySelector("#signin-form");
+      Array.forEach(signinForm.querySelectorAll("input, button"), function(v) { v.disabled = false; });
       document.querySelector("#signin-progress").classList.add("hidden");
     }
 
