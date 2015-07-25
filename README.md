@@ -1,8 +1,9 @@
 # Simple Fx Sync
 
 Firefox Sync client for Firefox OS,
-powered by [fos-fx-sync](https://github.com/cat-in-136/node-fx-sync).
+powered by [node-fx-sync](https://github.com/cat-in-136/node-fx-sync).
 
+[Simple Fx Sync is available on the Firefox Marketplace](https://marketplace.firefox.com/app/simplefxsync/).
 
 ## How to run (using Firefox WebIDE)
 
