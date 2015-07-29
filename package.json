@@ -1,6 +1,6 @@
 {
   "name": "fx-sync-4-fos",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Simple Firefox Sync client for Firefox OS",
   "scripts": {
     "build": "grunt build",
