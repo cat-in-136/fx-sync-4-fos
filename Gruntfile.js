@@ -27,6 +27,12 @@ module.exports = function (grunt) {
             src: ['cross_browser.css', 'transitions.css', 'util.css', 'icons/**/*.{css,png,svg}', 'style/**/*.{css,png,svg}'],
             dest: "assets/css/building-blocks/"
           },
+          {
+            expand: true, flatten: true,
+            cwd: 'bower_components/webL10n/',
+            src: ['l10n.js'],
+            dest: "assets/js/"
+          },
         ]
       }
     },
@@ -50,7 +56,21 @@ module.exports = function (grunt) {
             to: "window.setTimeout(function(v){v.hide();}, 4, this);//window.setTimeout(this.hide.bind(this));",
           }
         ]
-      }
+      },
+      remove_eval_on_l10n: {
+        src: "assets/js/l10n.js",
+        dest: "assets/js/l10n.js",
+        replacements: [
+          {
+            from: "args = eval(",
+            to: "throw new Error('eval call');//args = eval(",
+          },
+          {
+            from: "return eval(",
+            to: "throw new Error('eval call');//return eval(",
+          }
+        ]
+      },
     },
     zip: {
       "package": {
@@ -78,6 +98,7 @@ module.exports = function (grunt) {
     "copy:install",
     "replace:remove_eval_on_crypt",
     "replace:remove_broken_set_timeout",
+    "replace:remove_eval_on_l10n",
     "zip:package"
   ]);
   grunt.registerTask("default", ["build"]);

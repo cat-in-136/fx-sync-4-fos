@@ -14,12 +14,17 @@
   ],
   "dependencies": {
     "building-blocks": "gh-pages",
-    "fos-fx-sync": "cat-in-136/node-fx-sync"
+    "fos-fx-sync": "cat-in-136/node-fx-sync",
+    "webL10n": "fabi1cazenave/webL10n"
   },
   "exportsOverride": {
     "building-blocks": {
       "js": "js/*.js",
-      "css/": ["cross_browser.css", "transitions.css", "util.css"],
+      "css/": [
+        "cross_browser.css",
+        "transitions.css",
+        "util.css"
+      ],
       "css/icons": "icons",
       "css/style": "style"
     }
