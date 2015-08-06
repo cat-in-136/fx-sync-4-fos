@@ -22,6 +22,9 @@
     "*"
   ],
   "locales": {
+    "ja": {
+      "description": "Firefox OS のためのシンプルな Firefox Sync クライアント"
+    }
   },
   "default_locale": "en"
 }
