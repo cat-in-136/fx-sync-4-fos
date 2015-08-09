@@ -90,7 +90,7 @@ window.addEventListener("DOMContentLoaded", function() {
     if (list.querySelectorAll("li.bookmark-item").length == 0) {
       var item = document.createElement("li");
       item.setAttribute("aria-disabled", "true")
-      item.innerHTML = "<p>(No item)</p>";
+      item.innerHTML = '<p>' + document.webL10n.get("noitem")/*(No item)*/ + '</p>';
       list.appendChild(item);
     }
   }
@@ -117,7 +117,7 @@ window.addEventListener("DOMContentLoaded", function() {
     if (list.querySelectorAll("li").length == 0) {
       var item = document.createElement("li");
       item.setAttribute("aria-disabled", "true")
-      item.innerHTML = "<p>(No item)</p>";
+      item.innerHTML = '<p>' + document.webL10n.get("noitem")/*(No item)*/ + '</p>';
       list.appendChild(item);
     }
   }
@@ -132,7 +132,7 @@ window.addEventListener("DOMContentLoaded", function() {
     function failSignin(error) {
       console.error(error);// DEBUG
       var errmsg = (typeof(error) === "string")? error : (error.message || error.error);
-      utils.status.show("ERROR: " + errmsg);
+      utils.status.show(/*"ERROR: "*/document.webL10n.get("status-error") + ": " + errmsg);
 
       var signinForm = document.querySelector("#signin-form");
       Array.forEach(signinForm.querySelectorAll("input, button"), function(v) { v.disabled = false; });
@@ -149,7 +149,7 @@ window.addEventListener("DOMContentLoaded", function() {
 
         return P();
       }).done(function () {
-        utils.status.show("Reloaded");
+        utils.status.show(/*"Reloaded"*/document.webL10n.get("status-reloaded"));
         setCurrentSection("#storage-menu");
       }, function (error) {
         failSignin(error);
@@ -189,7 +189,7 @@ window.addEventListener("DOMContentLoaded", function() {
     function failSignin(error) {
       console.error(error);// DEBUG
       var errmsg = (typeof(error) === "string")? error : (error.message || error.error);
-      utils.status.show("ERROR: " + errmsg);
+      utils.status.show(/*"ERROR: "*/document.webL10n.get("status-error") + ": " + errmsg);
 
       Array.forEach(signinForm.querySelectorAll("input, button"), function(v) { v.disabled = false; });
       document.querySelector("#signin-progress").classList.add("hidden");
@@ -212,7 +212,7 @@ window.addEventListener("DOMContentLoaded", function() {
 
         return P();
       }).done(function () {
-        utils.status.show("Signed in");
+        utils.status.show(/*"Signed in"*/document.webL10n.get("status-signedin"));
         setCurrentSection("#storage-menu");
       }, function (error) {
         failSignin(error);
