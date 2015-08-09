@@ -54,7 +54,7 @@
     <section data-type="sidebar">
       <header>
         <menu type="toolbar">
-          <a>Done</a>
+          <a role="button" class="action-icon cancel">Done</a>
         </menu>
         <h1></h1>
       </header>
@@ -74,36 +74,36 @@
         <progress id="signin-progress" class="pack-activity hidden" max="100" value="0"></progress>
 
         <header>
-          <h2>Sign in</h2>
+          <h2 data-l10n-id="signin-title">Sign in</h2>
         </header>
         <form id="signin-form">
           <p>
             <label>
-              <span>E-mail</span>
+              <span data-l10n-id="signin-email">E-mail</span>
               <input type="email" name="email" required>
             </label>
             <label>
-              <span>Password</span>
+              <span data-l10n-id="signin-password">Password</span>
               <input type="password" name="password" required>
             </label>
 
             <span class="pack-checkbox-box">
               <label class="pack-checkbox"><input type="checkbox" name="own-cloud"><span></span></label>
-              <span>Use own cloud server</span>
+              <span data-l10n-id="signin-useowncloud">Use own cloud server</span>
             </span>
 
             <fieldset class="collapse" id="signin-own-cloud-box">
               <label>
-                <span>FxA auth server</span>
+                <span data-l10n-id="signin-fxaauthserver">FxA auth server</span>
                 <input type="text" name="fxaServerUrl">
               </label>
               <label>
-                <span>Sync auth server</span>
+                <span data-l10n-id="signin-syncaauthserver">Sync auth server</span>
                 <input type="text" name="syncAuthUrl">
               </label>
             </fieldset>
 
-            <button class="recommend" disabled>Sign in</button>
+            <button class="recommend" disabled data-l10n-id="signin-signin">Sign in</button>
           </p>
         </form>
       </article>
@@ -118,10 +118,10 @@
         <div data-type="list">
           <ul>
             <li>
-              <a data-panel="#bookmarks"><p>Bookmarks</p></a>
+              <a data-panel="#bookmarks"><p data-l10n-id="storage-bookmark">Bookmarks</p></a>
             </li>
             <li>
-              <a data-panel="#passwords"><p>Passwords</p></a>
+              <a data-panel="#passwords"><p data-l10n-id="storage-password">Passwords</p></a>
             </li>
           </ul>
         </div>
@@ -131,7 +131,7 @@
     <section id="bookmarks" role="region">
       <header class="fixed">
         <a class="btn-back" data-panel="#storage-menu"><span class="icon icon-back">back</span></a>
-        <h1>Sync::Bookmarks</h1>
+        <h1 data-l10n-id="bookmarks-title">Sync::Bookmarks</h1>
       </header>
       <article class="scrollable header">
         <div data-type="list">
@@ -144,7 +144,7 @@
     <section id="passwords" role="region">
       <header class="fixed">
         <a class="btn-back" data-panel="#storage-menu"><span class="icon icon-back">back</span></a>
-        <h1>Sync::Passwords</h1>
+        <h1 data-l10n-id="passwords-title">Sync::Bookmarks</h1>
       </header>
       <article class="scrollable header">
         <div data-type="list">
@@ -159,9 +159,9 @@
         <h1></h1>
       </header>
       <article class="scrollable">
-        <header><h2><label for="passwords-action-username">User name</label></h2></header>
+        <header><h2><label for="passwords-action-username" data-l10n-id="passwords-username">User name</label></h2></header>
         <input type="text" id="passwords-action-username" readonly="true">
-        <header><h2><label for="passwords-action-password">Password</label></h2></header>
+        <header><h2><label for="passwords-action-password" data-l10n-id="passwords-password">Password</label></h2></header>
         <input type="text" id="passwords-action-password" readonly="true" style="filter:url(#chalk-and-sponge);">
       </article>
       <svg>

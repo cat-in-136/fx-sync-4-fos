@@ -57,6 +57,10 @@ section.previous[role="region"] {
   animation: var(--transition-time) ease 0s normal forwards;
 }
 
+section[data-type="sidebar"] *[role="button"].action-icon {
+  font-size: 0px;
+}
+
 
 #signin-form {
   padding: 1rem 1.5rem;
