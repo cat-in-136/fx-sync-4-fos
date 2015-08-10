@@ -1,12 +1,12 @@
 window.addEventListener("DOMContentLoaded", function() {
   var P = require("p-promise");
   var Sync = require("fx-sync")();
-  var sync = undefined;
-  var bookmarks = undefined;
-  var passwords = undefined;
+  var sync;
+  var bookmarks;
+  var passwords;
 
-  function setCurrentSection(panel) {
-    var panel = document.querySelector(panel);
+  function setCurrentSection(panelName) {
+    var panel = document.querySelector(panelName);
     var current = document.querySelector('section.current[role="region"]');
     if (panel.classList.contains("previous")) {
       current.classList.remove("current");
@@ -20,44 +20,45 @@ window.addEventListener("DOMContentLoaded", function() {
   }
   function setBookmarks(aBookmarks) {
     bookmarks = aBookmarks;
-    if (bookmarks.length == 0) { return; }
+    if (bookmarks.length === 0) { return; }
     console.debug(bookmarks); // TODO to be removed
 
     setBookmarksPath(undefined);
   }
   function setBookmarksPath(aPath) {
-    if (aPath == undefined) { aPath = "places"; }
+    if (aPath) { aPath = "places"; }
     var list = document.querySelector("#bookmarks article ul");
     list.innerHTML = "";
 
-    var currentBookmark = bookmarks.find(function(v){return v.id == aPath});
+    var currentBookmark = bookmarks.find(function(v){return v.id === aPath;});
     if (currentBookmark && currentBookmark.parentid) {
-      var parentBookmark = bookmarks.find(function(v){return v.id == currentBookmark.parentid});
+      var parentBookmark = bookmarks.find(function(v){return v.id === currentBookmark.parentid;});
       if ((!parentBookmark) && (currentBookmark.parentid === "places")) {
         parentBookmark = { id: "places" };
       }
       if (parentBookmark) {
-        var item = document.createElement("li");
-        item.setAttribute("data-bookmark-type", "folder");
-        item.innerHTML = '<aside><span class="gaia-icon icon-browser-back" data-type="img"></span></aside><p></p>';
-        item.querySelector("p").appendChild(
+        var parentBookmarkItem = document.createElement("li");
+        parentBookmarkItem.setAttribute("data-bookmark-type", "folder");
+        parentBookmarkItem.innerHTML = '<aside><span class="gaia-icon icon-browser-back" data-type="img"></span></aside><p></p>';
+        parentBookmarkItem.querySelector("p").appendChild(
           document.createTextNode(parentBookmark.title || ("("+parentBookmark.id+")"))
         );
-        item.setAttribute("data-index-num", bookmarks.indexOf(parentBookmark));
-        list.appendChild(item);
+        parentBookmarkItem.setAttribute("data-index-num", bookmarks.indexOf(parentBookmark));
+        list.appendChild(parentBookmarkItem);
       }
     }
     if (currentBookmark) {
-      var item = document.createElement("li");
+      var currentBookmarkItem = document.createElement("li");
       var header = document.createElement("header");
 
-      item.appendChild(header);
-      header.appendChild(document.createTextNode(currentBookmark.title || ("("+currentBookmark.id+")")))
+      currentBookmarkItem.appendChild(header);
+      header.appendChild(document.createTextNode(currentBookmark.title || ("("+currentBookmark.id+")")));
     }
-    bookmarks.forEach(function (bookmark, index, bookmarks) {
-      if (bookmark.parentid == aPath) {
-        if ((bookmark.type == "bookmark") || (bookmark.type == "microsummary")) {
-          var item = document.createElement("li");
+    bookmarks.forEach(function (bookmark, index) {
+      if (bookmark.parentid === aPath) {
+        var item;
+        if ((bookmark.type === "bookmark") || (bookmark.type === "microsummary")) {
+          item = document.createElement("li");
           item.innerHTML = '<a href="" target="_blank"><p></p><p></p></a>';
           item.querySelector('a:link').href = bookmark.bmkUri;
           item.querySelector('p:first-child').appendChild(document.createTextNode(bookmark.title));
@@ -65,9 +66,8 @@ window.addEventListener("DOMContentLoaded", function() {
 
           item.classList.add("bookmark-item");
           item.setAttribute("data-index-num", index);
-          list.appendChild(item);
-        } else if (bookmark.type == "folder") {
-          var item = document.createElement("li");
+        } else if (bookmark.type === "folder") {
+          item = document.createElement("li");
           item.innerHTML = '<p></p>';
           item.setAttribute("data-bookmark-type", "folder");
           item.getElementsByTagName("p")[0].appendChild(
@@ -75,23 +75,24 @@ window.addEventListener("DOMContentLoaded", function() {
           );
           item.classList.add("bookmark-item");
           item.setAttribute("data-index-num", index);
-          list.appendChild(item);
-        } else if (bookmark.type == "separator") {
-          var item = document.createElement("li");
-          item.setAttribute("data-bookmark-type", "separator")
+        } else if (bookmark.type === "separator") {
+          item = document.createElement("li");
+          item.setAttribute("data-bookmark-type", "separator");
           item.innerHTML = "<p></p>";
           item.classList.add("bookmark-item");
           item.setAttribute("data-index-num", index);
-          list.appendChild(item);
         }
         // not supported: query, livemark
+        if (item) {
+          list.appendChild(item);
+        }
       }
     });
-    if (list.querySelectorAll("li.bookmark-item").length == 0) {
-      var item = document.createElement("li");
-      item.setAttribute("aria-disabled", "true")
-      item.innerHTML = "<p>(No item)</p>";
-      list.appendChild(item);
+    if (list.querySelectorAll("li.bookmark-item").length === 0) {
+      var noItem = document.createElement("li");
+      noItem.setAttribute("aria-disabled", "true");
+      noItem.innerHTML = "<p>(No Item)</p>";
+      list.appendChild(noItem);
     }
   }
   function setPasswords(aPasswords) {
@@ -100,7 +101,7 @@ window.addEventListener("DOMContentLoaded", function() {
     passwords = aPasswords;
     console.debug(passwords); // TODO to be removed
 
-    passwords.forEach(function (password, index, passwords) {
+    passwords.forEach(function (password, index) {
       if (!password.deleted) {
         var item = document.createElement("li");
         item.innerHTML = '<p></p><p></p>';
@@ -114,11 +115,11 @@ window.addEventListener("DOMContentLoaded", function() {
         list.appendChild(item);
       }
     });
-    if (list.querySelectorAll("li").length == 0) {
-      var item = document.createElement("li");
-      item.setAttribute("aria-disabled", "true")
-      item.innerHTML = "<p>(No item)</p>";
-      list.appendChild(item);
+    if (list.querySelectorAll("li").length === 0) {
+      var noItem = document.createElement("li");
+      noItem.setAttribute("aria-disabled", "true");
+      noItem.innerHTML = "<p>(No Item)</p>";
+      list.appendChild(noItem);
     }
   }
 
@@ -147,7 +148,7 @@ window.addEventListener("DOMContentLoaded", function() {
       }).then(function (results) {
         setPasswords(results);
 
-        return P();
+        return new P();
       }).done(function () {
         utils.status.show("Reloaded");
         setCurrentSection("#storage-menu");
@@ -173,7 +174,7 @@ window.addEventListener("DOMContentLoaded", function() {
     document.querySelector("#content").classList.toggle("sidebar-opened");
   }, false);
   Array.forEach(document.querySelectorAll(".pack-checkbox-box .pack-checkbox ~ span, .pack-radio-box .pack-radio ~ span, .pack-switch-box .pack-switch ~ span"), function(v) {
-    v.addEventListener("click", function (event) {
+    v.addEventListener("click", function () {
       v.checked = !v.checked;
       v.dispatchEvent(new Event("change"));
     }, false);
@@ -210,7 +211,7 @@ window.addEventListener("DOMContentLoaded", function() {
       }).then(function (results) {
         setPasswords(results);
 
-        return P();
+        return new P();
       }).done(function () {
         utils.status.show("Signed in");
         setCurrentSection("#storage-menu");
@@ -241,7 +242,7 @@ window.addEventListener("DOMContentLoaded", function() {
 
   document.querySelector("#bookmarks ul").addEventListener("click", function (event) {
     var targets = this.querySelectorAll('li[data-bookmark-type="folder"]');
-    for (var elem = event.target; (elem != null) && (elem != this); elem = elem.parentNode) {
+    for (var elem = event.target; (elem) && (elem !== this); elem = elem.parentNode) {
       if (Array.indexOf(targets, elem) >= 0) {
         var li = elem;
 
@@ -253,7 +254,7 @@ window.addEventListener("DOMContentLoaded", function() {
   }, false);
   document.querySelector("#passwords ul").addEventListener("click", function (event) {
     var targets = this.querySelectorAll('li');
-    for (var elem = event.target; (elem != null) && (elem != this); elem = elem.parentNode) {
+    for (var elem = event.target; (elem) && (elem !== this); elem = elem.parentNode) {
       if (Array.indexOf(targets, elem) >= 0) {
         var li = elem;
 
