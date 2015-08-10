@@ -65,6 +65,16 @@ module.exports = function (grunt) {
           "manifest.webapp"
         ]
       }
+    },
+    jshint: {
+      files: [
+        "Gruntfile.js",
+        "package.json",
+        "*.js"
+      ],
+      options: {
+        jshintrc: ".jshintrc"
+      }
     }
   });
 
@@ -72,13 +82,21 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-text-replace');
   grunt.loadNpmTasks('grunt-zip');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
 
   grunt.registerTask("build", [
     "clean:build",
     "copy:install",
     "replace:remove_eval_on_crypt",
-    "replace:remove_broken_set_timeout",
+    "replace:remove_broken_set_timeout"
+  ]);
+  grunt.registerTask("test", [
+    "build",
+    "jshint"
+  ]);
+  grunt.registerTask("dist", [
+    "build",
     "zip:package"
   ]);
-  grunt.registerTask("default", ["build"]);
-}
+  grunt.registerTask("default", ["dist"]);
+};
