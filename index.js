@@ -201,6 +201,7 @@ window.addEventListener("DOMContentLoaded", function() {
     var ownCloud = signinForm.querySelector('input[name="own-cloud"]').checked;
     var fxaServerUrl = (ownCloud)? signinForm.querySelector('input[name="fxaServerUrl"]').value : undefined;
     var syncAuthUrl = (ownCloud)? signinForm.querySelector('input[name="syncAuthUrl"]').value : undefined;
+    var savePassword = signinForm.querySelector('input[name="save-password"]').checked;
 
     try {
       sync = new Sync({ email: email, password: password }, { fxaServerUrl: fxaServerUrl, syncAuthUrl: syncAuthUrl });
@@ -210,6 +211,16 @@ window.addEventListener("DOMContentLoaded", function() {
         return sync.fetch("passwords");
       }).then(function (results) {
         setPasswords(results);
+
+        return new P();
+      }).then(function (results) {
+        if (savePassword) {
+          window.localStorage.setItem("email", email);
+          window.localStorage.setItem("password", password);
+        } else {
+          window.localStorage.removeItem("email");
+          window.localStorage.removeItem("password");
+        }
 
         return new P();
       }).done(function () {
@@ -231,6 +242,11 @@ window.addEventListener("DOMContentLoaded", function() {
     }
   }, false);
   document.querySelector('#signin-form input[name="own-cloud"]').dispatchEvent(new Event("change"));
+  if (window.localStorage.getItem("email") && window.localStorage.getItem("password")) {
+    document.querySelector('#signin-form input[name="email"]').value = window.localStorage.getItem("email");
+    document.querySelector('#signin-form input[name="password"]').value = window.localStorage.getItem("password");
+    document.querySelector('#signin-form input[name="save-password"]').checked = true;
+  }
 
   Array.forEach(document.querySelectorAll("a.btn-back[data-panel], #storage-menu ul a[data-panel]"), function (v){
     v.addEventListener("click", function (event) {
