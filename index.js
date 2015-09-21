@@ -1,5 +1,6 @@
 window.addEventListener("DOMContentLoaded", function() {
   var P = require("p-promise");
+  var sjcl = require("sjcl");
   var Sync = require("fx-sync")();
   var sync;
   var bookmarks;
@@ -215,11 +216,34 @@ window.addEventListener("DOMContentLoaded", function() {
         return new P();
       }).then(function (results) {
         if (savePassword) {
-          window.localStorage.setItem("email", email);
-          window.localStorage.setItem("password", password);
+          var account = { email: email, password: password };
+          if (ownCloud) {
+            account.ownCloud = true;
+            account.fxaServerUrl = fxaServerUrl;
+            account.syncAuthUrl = syncAuthUrl;
+          }
+
+          var is_new_account_data = true;
+          if (window.localStorage.getItem("account")) {
+            try {
+              var current_account_encrypted = window.localStorage.getItem("account");
+              if (sjcl.decrypt("", current_account_encrypted) == JSON.stringify(account)) {
+                is_new_account_data = true;
+              }
+            } catch (ex) {}
+          }
+
+          if (is_new_account_data) {
+            var salt = (window.crypto)? btoa(String.fromCharCode.apply(null, window.crypto.getRandomValues(new Uint8Array(32)))) :
+                                        sjcl.random.randomWords(8, 0);
+            var jscl_p = { mode: "ccm", ks: 256, salt: salt };
+
+            // TODO use master password
+            var account_encrypted = sjcl.encrypt("", JSON.stringify(account), jscl_p);
+            window.localStorage.setItem("account", account_encrypted);
+          }
         } else {
-          window.localStorage.removeItem("email");
-          window.localStorage.removeItem("password");
+          window.localStorage.removeItem("account");
         }
 
         return new P();
@@ -242,9 +266,22 @@ window.addEventListener("DOMContentLoaded", function() {
     }
   }, false);
   document.querySelector('#signin-form input[name="own-cloud"]').dispatchEvent(new Event("change"));
-  if (window.localStorage.getItem("email") && window.localStorage.getItem("password")) {
-    document.querySelector('#signin-form input[name="email"]').value = window.localStorage.getItem("email");
-    document.querySelector('#signin-form input[name="password"]').value = window.localStorage.getItem("password");
+  if (window.localStorage.getItem("account")) {
+    try {
+      var account_encrypted = window.localStorage.getItem("account");
+      var account = JSON.parse(sjcl.decrypt("", account_encrypted));
+
+      document.querySelector('#signin-form input[name="email"]').value = account.email;
+      document.querySelector('#signin-form input[name="password"]').value = account.password;
+      if (data.ownCloud) {
+        document.querySelector('#signin-form input[name="own-cloud"]').checked = true;
+        document.querySelector('#signin-form input[name="fxaServerUrl"]').value = account.fxaServerUrl;
+        document.querySelector('#signin-form input[name="syncAuthUrl"]').value = account.syncAuthUrl;
+      } else {
+        document.querySelector('#signin-form input[name="own-cloud"]').checked = false;
+      }
+    } catch (ex) {
+    }
     document.querySelector('#signin-form input[name="save-password"]').checked = true;
   }
 
