@@ -81,3 +81,6 @@ section.previous[role="region"] {
   background-color: transparent;
 }
 
+.fade-out > [role="dialog"] {
+  display: none;
+}

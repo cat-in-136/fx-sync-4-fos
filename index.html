@@ -58,6 +58,7 @@
       <nav>
         <ul>
           <li><a id="reload-menuitem">Reload</a></li>
+          <li><a id="change-master-password-menuitem">Change Master Password</a></li>
           <li><a id="sign-out-menuitem">Sign out</a></li>
         </ul>
       </nav>
@@ -174,6 +175,47 @@
       </svg>
     </section>
 
+  </section>
+
+  <section class="fade-out" id="master-password">
+    <form role="dialog" data-type="confirm" id="master-password-form">
+      <section>
+        <h1>Master Password Required</h1>
+        <p>
+          <label>
+            <span>Master Password</span>
+            <input name="master-password" type="password" required="">
+          </label>
+        </p>
+      </section>
+      <menu>
+        <button type="button">Cancel</button>
+        <button class="recommend">OK</button>
+      </menu>
+    </form>
+  </section>
+
+  <section class="fade-out" id="change-master-password">
+    <form role="dialog" data-type="confirm" id="change-master-password-form">
+      <section>
+        <h1>Change Master Password</h1>
+        <p>
+          <label>
+            <span>Master Password</span>
+            <input name="master-password" type="password" placeholder="No Master Password">
+          </label>
+          <label>
+            <span>Master Password (Confirm)</span>
+            <input name="master-password-confirm" type="password" placeholder="No Master Password">
+          </label>
+          <span>Please make sure you remember the Master Password you have set.</span>
+        </p>
+      </section>
+      <menu>
+        <button type="button">Cancel</button>
+        <button class="recommend">OK</button>
+      </menu>
+    </form>
   </section>
 
 </body>

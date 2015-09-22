@@ -6,6 +6,52 @@ window.addEventListener("DOMContentLoaded", function() {
   var bookmarks;
   var passwords;
 
+  function loadLocalStorage(masterPassword) {
+    if (window.localStorage.getItem("account")) {
+      var account_encrypted = window.localStorage.getItem("account");
+      var account = JSON.parse(sjcl.decrypt(masterPassword, account_encrypted));
+
+      document.querySelector('#signin-form input[name="email"]').value = account.email;
+      document.querySelector('#signin-form input[name="password"]').value = account.password;
+      if (account.ownCloud) {
+        document.querySelector('#signin-form input[name="own-cloud"]').checked = true;
+        document.querySelector('#signin-form input[name="fxaServerUrl"]').value = account.fxaServerUrl;
+        document.querySelector('#signin-form input[name="syncAuthUrl"]').value = account.syncAuthUrl;
+      } else {
+        document.querySelector('#signin-form input[name="own-cloud"]').checked = false;
+      }
+    }
+  }
+  function storeLocalStorage(masterPassword) {
+    var signinForm = document.querySelector("#signin-form");
+    var email = signinForm.querySelector('input[name="email"]').value;
+    var password = signinForm.querySelector('input[name="password"]').value;
+    var ownCloud = signinForm.querySelector('input[name="own-cloud"]').checked;
+    var fxaServerUrl = (ownCloud)? signinForm.querySelector('input[name="fxaServerUrl"]').value : undefined;
+    var syncAuthUrl = (ownCloud)? signinForm.querySelector('input[name="syncAuthUrl"]').value : undefined;
+    var savePassword = signinForm.querySelector('input[name="save-password"]').checked;
+
+    var account = { email: email, password: password };
+    if (ownCloud) {
+      account.ownCloud = true;
+      account.fxaServerUrl = fxaServerUrl;
+      account.syncAuthUrl = syncAuthUrl;
+    }
+
+    var salt = (window.crypto)? btoa(String.fromCharCode.apply(null, window.crypto.getRandomValues(new Uint8Array(32)))) :
+                                sjcl.random.randomWords(8, 0);
+    var jscl_p = { mode: "ccm", ks: 256, salt: salt };
+    if (!masterPassword) { masterPassword = ""; }
+    var account_encrypted = sjcl.encrypt(masterPassword, JSON.stringify(account), jscl_p);
+
+    window.localStorage.setItem("account", account_encrypted);
+    if (masterPassword !== "") {
+      window.localStorage.setItem("has_master_password", true);
+    } else {
+      window.localStorage.removeItem("has_master_password");
+    }
+  }
+
   function setCurrentSection(panelName) {
     var panel = document.querySelector(panelName);
     var current = document.querySelector('section.current[role="region"]');
@@ -161,6 +207,12 @@ window.addEventListener("DOMContentLoaded", function() {
       failSignin(ex);
     }
   }, false);
+  document.querySelector("#change-master-password-menuitem").addEventListener("click", function () {
+    document.querySelector("#content").classList.remove("sidebar-opened");
+    var change_master_password = document.querySelector("#change-master-password");
+    change_master_password.classList.add("fade-in");
+    change_master_password.classList.remove("fade-out");
+  }, false);
   document.querySelector("#sign-out-menuitem").addEventListener("click", function () {
     document.querySelector("#content").classList.remove("sidebar-opened");
     setCurrentSection("#index");
@@ -216,34 +268,12 @@ window.addEventListener("DOMContentLoaded", function() {
         return new P();
       }).then(function (results) {
         if (savePassword) {
-          var account = { email: email, password: password };
-          if (ownCloud) {
-            account.ownCloud = true;
-            account.fxaServerUrl = fxaServerUrl;
-            account.syncAuthUrl = syncAuthUrl;
-          }
-
-          var is_new_account_data = true;
-          if (window.localStorage.getItem("account")) {
-            try {
-              var current_account_encrypted = window.localStorage.getItem("account");
-              if (sjcl.decrypt("", current_account_encrypted) == JSON.stringify(account)) {
-                is_new_account_data = true;
-              }
-            } catch (ex) {}
-          }
-
-          if (is_new_account_data) {
-            var salt = (window.crypto)? btoa(String.fromCharCode.apply(null, window.crypto.getRandomValues(new Uint8Array(32)))) :
-                                        sjcl.random.randomWords(8, 0);
-            var jscl_p = { mode: "ccm", ks: 256, salt: salt };
-
-            // TODO use master password
-            var account_encrypted = sjcl.encrypt("", JSON.stringify(account), jscl_p);
-            window.localStorage.setItem("account", account_encrypted);
+          if (!window.localStorage.getItem("has_master_password")) {
+            storeLocalStorage(null);
           }
         } else {
           window.localStorage.removeItem("account");
+          window.localStorage.removeItem("has_master_password");
         }
 
         return new P();
@@ -267,20 +297,14 @@ window.addEventListener("DOMContentLoaded", function() {
   }, false);
   document.querySelector('#signin-form input[name="own-cloud"]').dispatchEvent(new Event("change"));
   if (window.localStorage.getItem("account")) {
-    try {
-      var account_encrypted = window.localStorage.getItem("account");
-      var account = JSON.parse(sjcl.decrypt("", account_encrypted));
-
-      document.querySelector('#signin-form input[name="email"]').value = account.email;
-      document.querySelector('#signin-form input[name="password"]').value = account.password;
-      if (data.ownCloud) {
-        document.querySelector('#signin-form input[name="own-cloud"]').checked = true;
-        document.querySelector('#signin-form input[name="fxaServerUrl"]').value = account.fxaServerUrl;
-        document.querySelector('#signin-form input[name="syncAuthUrl"]').value = account.syncAuthUrl;
-      } else {
-        document.querySelector('#signin-form input[name="own-cloud"]').checked = false;
+    if (window.localStorage.getItem("has_master_password")) {
+      document.querySelector("#master-password").classList.add("fade-in");
+      document.querySelector("#master-password").classList.remove("fade-out");
+    } else {
+      try {
+        loadLocalStorage("");
+      } catch (ex) {
       }
-    } catch (ex) {
     }
     document.querySelector('#signin-form input[name="save-password"]').checked = true;
   }
@@ -330,5 +354,67 @@ window.addEventListener("DOMContentLoaded", function() {
     }, false);
   });
   document.querySelector("#passwords-action-menu svg feTurbulence").setAttribute("seed", Math.random() * 1000);
+
+  document.querySelector("#master-password-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    var master_password = document.querySelector('#master-password-form input[name="master-password"]');
+    try {
+      loadLocalStorage(master_password.value);
+
+      var master_password = document.querySelector("#master-password");
+      master_password.classList.add("fade-out");
+      master_password.classList.remove("fade-in");
+    } catch (ex) {
+      master_password.select();
+
+      console.error(ex);// DEBUG
+      var errmsg = ex.message || ex.error;
+      utils.status.show("ERROR: " + errmsg);
+    }
+  }, false);
+  document.querySelector("#master-password-form button:first-child").addEventListener("click", function(event) {
+    event.preventDefault();
+    var master_password = document.querySelector("#master-password");
+    master_password.classList.add("fade-out");
+    master_password.classList.remove("fade-in");
+  }, false);
+
+  Array.forEach(document.querySelectorAll('#change-master-password-form input[type="password"]'), function (v) {
+    v.addEventListener("change", function (event) {
+      var master_password = document.querySelector('#change-master-password-form input[name="master-password"]');
+      var master_password_confirm = document.querySelector('#change-master-password-form input[name="master-password-confirm"]');
+      var change_master_password_ok = document.querySelector("#change-master-password button.recommend");
+
+      if (master_password.value !== master_password_confirm.value) {
+        master_password_confirm.setCustomValidity("Passwords must match.");
+        change_master_password_ok.disabled = true;
+      } else {
+        master_password_confirm.setCustomValidity(""); // clear
+        change_master_password_ok.disabled = false;
+      }
+    }, false);
+    v.addEventListener("keyup", function (event) {
+      event.currentTarget.dispatchEvent(new Event("change"));
+    }, false);
+  });
+  document.querySelector("#change-master-password-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+    var change_master_password_ok = document.querySelector("#change-master-password button.recommend");
+    if (change_master_password_ok.disabled === false) {
+      var change_master_password = document.querySelector('#change-master-password-form input[name="master-password"]');
+      storeLocalStorage(change_master_password.value);
+
+      var change_master_password = document.querySelector("#change-master-password");
+      change_master_password.classList.add("fade-out");
+      change_master_password.classList.remove("fade-in");
+    }
+  }, false);
+  document.querySelector("#change-master-password-form button:first-child").addEventListener("click", function(event) {
+    event.preventDefault();
+    var change_master_password = document.querySelector("#change-master-password");
+    change_master_password.classList.add("fade-out");
+    change_master_password.classList.remove("fade-in");
+  }, false);
 
 }, false);
