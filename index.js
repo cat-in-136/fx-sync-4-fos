@@ -230,6 +230,10 @@ window.addEventListener("DOMContentLoaded", function() {
     });
     document.querySelector("#signin-progress").classList.add("hidden");
   }, false);
+  document.querySelector("#quit-menuitem").addEventListener("click", function () {
+    document.querySelector("#content").classList.remove("sidebar-opened");
+    window.close();
+  }, false);
   document.querySelector("a.sidebar-toggle").addEventListener("click", function () {
     document.querySelector("#content").classList.toggle("sidebar-opened");
   }, false);
@@ -373,8 +377,7 @@ window.addEventListener("DOMContentLoaded", function() {
       master_password.select();
 
       console.error(ex);// DEBUG
-      var errmsg = ex.message || ex.error;
-      utils.status.show("ERROR: " + errmsg);
+      utils.status.show("Wrong password");
     }
   }, false);
   document.querySelector("#master-password-form button:first-child").addEventListener("click", function(event) {
@@ -402,16 +405,23 @@ window.addEventListener("DOMContentLoaded", function() {
   });
   document.querySelector("#change-master-password-form").addEventListener("submit", function(event) {
     event.preventDefault();
+    var master_password = document.querySelector('#change-master-password-form input[name="master-password"]');
+    var master_password_confirm = document.querySelector('#change-master-password-form input[name="master-password-confirm"]');
     var change_master_password_ok = document.querySelector("#change-master-password button.recommend");
-    if (change_master_password_ok.disabled === false) {
-      var change_master_password = document.querySelector('#change-master-password-form input[name="master-password"]');
-      storeLocalStorage(change_master_password.value);
+    if ((change_master_password_ok.disabled === false) && (master_password.value === master_password_confirm.value)) {
+      storeLocalStorage(master_password.value);
+      utils.status.show("Master Password has been updated.");
 
       setDialogVisibility(document.querySelector("#change-master-password"), false);
+      master_password.value = "";
+      master_password_confirm.value = "";
     }
   }, false);
   document.querySelector("#change-master-password-form button:first-child").addEventListener("click", function(event) {
     event.preventDefault();
+    var master_password = document.querySelector('#change-master-password-form input[name="master-password"]');
+    var master_password_confirm = document.querySelector('#change-master-password-form input[name="master-password-confirm"]');
+    master_password.value = master_password_confirm.value = "";
     setDialogVisibility(document.querySelector("#change-master-password"), false);
   }, false);
 
