@@ -29,7 +29,6 @@ window.addEventListener("DOMContentLoaded", function() {
     var ownCloud = signinForm.querySelector('input[name="own-cloud"]').checked;
     var fxaServerUrl = (ownCloud)? signinForm.querySelector('input[name="fxaServerUrl"]').value : undefined;
     var syncAuthUrl = (ownCloud)? signinForm.querySelector('input[name="syncAuthUrl"]').value : undefined;
-    var savePassword = signinForm.querySelector('input[name="save-password"]').checked;
 
     var account = { email: email, password: password };
     if (ownCloud) {
@@ -65,6 +64,16 @@ window.addEventListener("DOMContentLoaded", function() {
       panel.classList.add("current");
     }
   }
+  function setDialogVisibility(elem, visibility) {
+    if (visibility) {
+      elem.classList.add("fade-in");
+      elem.classList.remove("fade-out");
+    } else {
+      elem.classList.add("fade-out");
+      elem.classList.remove("fade-in");
+    }
+  }
+
   function setBookmarks(aBookmarks) {
     bookmarks = aBookmarks;
     if (bookmarks.length === 0) { return; }
@@ -209,9 +218,7 @@ window.addEventListener("DOMContentLoaded", function() {
   }, false);
   document.querySelector("#change-master-password-menuitem").addEventListener("click", function () {
     document.querySelector("#content").classList.remove("sidebar-opened");
-    var change_master_password = document.querySelector("#change-master-password");
-    change_master_password.classList.add("fade-in");
-    change_master_password.classList.remove("fade-out");
+    setDialogVisibility(document.querySelector("#change-master-password"), true);
   }, false);
   document.querySelector("#sign-out-menuitem").addEventListener("click", function () {
     document.querySelector("#content").classList.remove("sidebar-opened");
@@ -266,7 +273,7 @@ window.addEventListener("DOMContentLoaded", function() {
         setPasswords(results);
 
         return new P();
-      }).then(function (results) {
+      }).then(function () {
         if (savePassword) {
           if (!window.localStorage.getItem("has_master_password")) {
             storeLocalStorage(null);
@@ -298,8 +305,7 @@ window.addEventListener("DOMContentLoaded", function() {
   document.querySelector('#signin-form input[name="own-cloud"]').dispatchEvent(new Event("change"));
   if (window.localStorage.getItem("account")) {
     if (window.localStorage.getItem("has_master_password")) {
-      document.querySelector("#master-password").classList.add("fade-in");
-      document.querySelector("#master-password").classList.remove("fade-out");
+      setDialogVisibility(document.querySelector("#master-password"), true);
     } else {
       try {
         loadLocalStorage("");
@@ -362,9 +368,7 @@ window.addEventListener("DOMContentLoaded", function() {
     try {
       loadLocalStorage(master_password.value);
 
-      var master_password = document.querySelector("#master-password");
-      master_password.classList.add("fade-out");
-      master_password.classList.remove("fade-in");
+      setDialogVisibility(document.querySelector("#master-password"), false);
     } catch (ex) {
       master_password.select();
 
@@ -375,13 +379,11 @@ window.addEventListener("DOMContentLoaded", function() {
   }, false);
   document.querySelector("#master-password-form button:first-child").addEventListener("click", function(event) {
     event.preventDefault();
-    var master_password = document.querySelector("#master-password");
-    master_password.classList.add("fade-out");
-    master_password.classList.remove("fade-in");
+    setDialogVisibility(document.querySelector("#master-password"), false);
   }, false);
 
   Array.forEach(document.querySelectorAll('#change-master-password-form input[type="password"]'), function (v) {
-    v.addEventListener("change", function (event) {
+    v.addEventListener("change", function () {
       var master_password = document.querySelector('#change-master-password-form input[name="master-password"]');
       var master_password_confirm = document.querySelector('#change-master-password-form input[name="master-password-confirm"]');
       var change_master_password_ok = document.querySelector("#change-master-password button.recommend");
@@ -405,16 +407,12 @@ window.addEventListener("DOMContentLoaded", function() {
       var change_master_password = document.querySelector('#change-master-password-form input[name="master-password"]');
       storeLocalStorage(change_master_password.value);
 
-      var change_master_password = document.querySelector("#change-master-password");
-      change_master_password.classList.add("fade-out");
-      change_master_password.classList.remove("fade-in");
+      setDialogVisibility(document.querySelector("#change-master-password"), false);
     }
   }, false);
   document.querySelector("#change-master-password-form button:first-child").addEventListener("click", function(event) {
     event.preventDefault();
-    var change_master_password = document.querySelector("#change-master-password");
-    change_master_password.classList.add("fade-out");
-    change_master_password.classList.remove("fade-in");
+    setDialogVisibility(document.querySelector("#change-master-password"), false);
   }, false);
 
 }, false);
