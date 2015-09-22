@@ -14,4 +14,8 @@ powered by [node-fx-sync](https://github.com/cat-in-136/node-fx-sync).
  5. Select the working copy directory.
  6. Push the button "Install & Run" (Ctrl+R).
 
+## FAQ
+
+ * Q: Does this app make a *direct* connection to the Sync servers, or make a connection via some bridge/proxy?
+   * A: No bridge. This app *directly* connects to the Sync servers.
 
