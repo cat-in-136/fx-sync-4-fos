@@ -1,4 +1,6 @@
-window.addEventListener("DOMContentLoaded", function() {
+window.addEventListener("DOMContentLoaded", function index_on_load() {
+  window.removeEventListener("DOMContentLoaded", index_on_load, false);
+
   var P = require("p-promise");
   var sjcl = require("sjcl");
   var Sync = require("fx-sync")();
