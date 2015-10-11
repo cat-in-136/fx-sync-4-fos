@@ -84,7 +84,7 @@ window.addEventListener("DOMContentLoaded", function index_on_load() {
     setBookmarksPath(undefined);
   }
   function setBookmarksPath(aPath) {
-    if (aPath) { aPath = "places"; }
+    if (!aPath) { aPath = "places"; }
     var list = document.querySelector("#bookmarks article ul");
     list.innerHTML = "";
 
